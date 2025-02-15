@@ -7,17 +7,16 @@ import { ComponentProps, useEffect, useState } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { ClassValue } from "clsx";
 
-const tabTriggerVariants = cva("", {
+const tabTriggerVariants = cva("data-[state=active]:shadow-none", {
   variants: {
     variant: {
-      line: "relative after:absolute after:inset-x-0 after:bottom-0 after:-mb-1 after:h-0.5 hover:bg-accent hover:text-foreground data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:after:bg-primary data-[state=active]:hover:bg-accent data-[state=active]:text-primary text-muted-foreground",
-      default:
-        "data-[state=active]:bg-muted data-[state=active]:shadow-none data-[state=active]:text-primary",
+      line: "relative after:absolute hover:text-foreground data-[state=active]:bg-transparent data-[state=active]:after:bg-primary data-[state=active]:text-primary text-muted-foreground",
+      default: "data-[state=active]:bg-muted data-[state=active]:text-primary",
     },
     orientation: {
-      horizontal: "",
-      vertical:
-        "w-full justify-start data-[state=active]:bg-muted data-[state=active]:shadow-none",
+      horizontal:
+        "after:absolute after:inset-x-0 after:bottom-0 after:-mb-1 after:h-0.5",
+      vertical: "w-full justify-start",
     },
   },
   defaultVariants: {
@@ -29,7 +28,7 @@ const tabTriggerVariants = cva("", {
       variant: "line",
       orientation: "vertical",
       className:
-        "after:inset-y-0 after:right-0 after:-mr-1 after:w-0.5 after:h-auto",
+        "after:inset-y-0 after:right-0 after:-mr-1 after:w-0.5 after:h-auto after:start-0 rounded-none w-full justify-start",
     },
   ],
 });
@@ -89,6 +88,7 @@ type UI = {
   list?: ClassValue;
   trigger?: ClassValue;
 };
+
 interface WoltzTabProps
   extends Omit<ComponentProps<typeof Tabs>, "onChange" | "orientation">,
     VariantProps<typeof tabTriggerVariants> {
