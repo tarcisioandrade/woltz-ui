@@ -5,6 +5,7 @@ import { useQueryState } from "nuqs";
 import { LucideIcon } from "lucide-react";
 import { ComponentProps, useEffect, useState } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
+import { ClassValue } from "clsx";
 
 const tabTriggerVariants = cva("", {
   variants: {
@@ -84,12 +85,17 @@ interface Separator {
 
 export type WoltzTabItem = TabItem | Separator;
 
+type UI = {
+  list?: ClassValue;
+  trigger?: ClassValue;
+};
 interface WoltzTabProps
   extends Omit<ComponentProps<typeof Tabs>, "onChange" | "orientation">,
     VariantProps<typeof tabTriggerVariants> {
   tabs: WoltzTabItem[];
   activeColor?: string;
   queryName?: string;
+  ui?: UI;
 }
 
 export function WoltzTab({
@@ -101,6 +107,7 @@ export function WoltzTab({
   className,
   orientation = "horizontal",
   variant,
+  ui,
   ...props
 }: WoltzTabProps) {
   const [query, setQuery] = useQueryState(queryName ?? "");
@@ -136,7 +143,9 @@ export function WoltzTab({
       orientation={orientation ?? undefined}
       {...props}
     >
-      <TabsList className={tabListVariants({ variant, orientation })}>
+      <TabsList
+        className={cn(tabListVariants({ variant, orientation }), ui?.list)}
+      >
         {tabs.map((tab, i) => {
           if (tab.type === "separator") {
             return <Separator key={`separator-${i}`} />;
@@ -147,7 +156,10 @@ export function WoltzTab({
             <TabsTrigger
               key={tab.value}
               value={tab.value}
-              className={tabTriggerVariants({ variant, orientation })}
+              className={cn(
+                tabTriggerVariants({ variant, orientation }),
+                ui?.trigger
+              )}
             >
               {Icon && <Icon className="mr-1" size={20} />}
               {tab.title}
