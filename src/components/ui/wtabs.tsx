@@ -112,17 +112,17 @@ export function WTabs({
 }: WTabsProps) {
   const [queryValue, setQuery] = useQueryState(query ?? "");
   const [selected, setSelected] = useState<string | null>(
-    (query || defaultValue) ?? null
+    (queryValue || defaultValue) ?? null
   );
 
   function handleSelected(value: string) {
     setSelected(value);
-    if (queryValue) setQuery(value);
+    if (query) setQuery(value);
     onValueChange?.(value);
   }
 
   useEffect(function setDefaultQueryName() {
-    if (query) setQuery(query);
+    if (queryValue) setQuery(queryValue);
   }, []);
 
   const Separator = () => (

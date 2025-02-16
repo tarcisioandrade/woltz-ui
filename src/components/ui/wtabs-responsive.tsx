@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { useQueryState } from "nuqs";
@@ -257,22 +258,19 @@ export function WTabs({
 }: WTabsProps) {
   const [queryValue, setQuery] = useQueryState(query ?? "");
   const [selected, setSelected] = useState<string>(
-    (query || defaultValue || tabs[0]?.value) ?? ""
+    (queryValue || defaultValue || tabs[0]?.value) ?? ""
   );
   const isMobile = useIsMobile();
 
   function handleSelected(value: string) {
     setSelected(value);
-    if (queryValue) setQuery(value);
+    if (query) setQuery(value);
     onValueChange?.(value);
   }
 
-  useEffect(
-    function setDefaultQueryName() {
-      if (query) setQuery(query);
-    },
-    [query, setQuery]
-  );
+  useEffect(function setDefaultQueryName() {
+    if (queryValue) setQuery(queryValue);
+  }, []);
 
   if (!tabs.length) return null;
 
