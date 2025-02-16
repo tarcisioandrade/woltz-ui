@@ -1,7 +1,11 @@
 import { AppWindow, Check, Mail } from "lucide-react";
-import { WoltzTab, WoltzTabItem } from "./components/ui/woltz-tabs";
-import { TabsContent } from "@/components/ui/tabs";
-const tabs: WoltzTabItem[] = [
+import {
+  WTabs,
+  WTabsItem,
+  WTabsContent,
+} from "./components/ui/wtabs-responsive";
+
+const tabs: WTabsItem[] = [
   {
     title: "Tab1",
     value: "tab1",
@@ -18,7 +22,7 @@ const tabs: WoltzTabItem[] = [
   },
 ];
 
-const tabs2: WoltzTabItem[] = [
+const tabs2: WTabsItem[] = [
   {
     icon: Check,
     title: "Tab1",
@@ -36,7 +40,7 @@ const tabs2: WoltzTabItem[] = [
   },
 ];
 
-const tabs3: WoltzTabItem[] = [
+const tabs3: WTabsItem[] = [
   {
     icon: Check,
     title: "Tab1",
@@ -56,7 +60,7 @@ const tabs3: WoltzTabItem[] = [
   },
 ];
 
-const tabs4: WoltzTabItem[] = [
+const tabs4: WTabsItem[] = [
   {
     icon: Check,
     title: "Tab1",
@@ -81,90 +85,85 @@ function App() {
         <p className="text-xl text-primary mb-4">
           Variant: "Line" - Horizontal - com Separator
         </p>
-        <WoltzTab
-          tabs={tabs}
-          queryName="main"
-          defaultValue="tab3"
-          variant="line"
-        >
+        <WTabs tabs={tabs} query="main" defaultValue="tab3" variant="line">
           <div className="bg-gray-50 rounded">
-            <TabsContent value="tab1">
+            <WTabsContent value="tab1">
               <p>Conteúdo 1</p>
-            </TabsContent>
-            <TabsContent value="tab2">
+            </WTabsContent>
+            <WTabsContent value="tab2">
               <p>Conteúdo 2</p>
-            </TabsContent>
-            <TabsContent value="tab3">
+            </WTabsContent>
+            <WTabsContent value="tab3">
               <p>Conteúdo 3</p>
-            </TabsContent>
+            </WTabsContent>
           </div>
-        </WoltzTab>
+        </WTabs>
       </div>
 
       <div className="mt-12 p-2 rounded-md border">
         <p className="text-xl text-primary mb-4">Variant: "Line" - Vertical</p>
-        <WoltzTab
+        <WTabs
           tabs={tabs2}
-          queryName="main"
+          query="main"
           defaultValue="tab3"
           variant="line"
           orientation="vertical"
         >
           <div className="bg-gray-50 rounded">
-            <TabsContent value="tab1">
+            <WTabsContent value="tab1">
               <p>Conteúdo 1</p>
-            </TabsContent>
-            <TabsContent value="tab2">
+            </WTabsContent>
+            <WTabsContent value="tab2">
               <p>Conteúdo 2</p>
-            </TabsContent>
-            <TabsContent value="tab3">
+            </WTabsContent>
+            <WTabsContent value="tab3">
               <p>Conteúdo 3</p>
-            </TabsContent>
+            </WTabsContent>
           </div>
-        </WoltzTab>
+        </WTabs>
       </div>
 
       <div className="mt-12 p-2 rounded-md border">
         <p className="text-xl text-primary mb-4">
           Variant: "Default" - Horizontal
         </p>
-        <WoltzTab tabs={tabs4} queryName="main" defaultValue="tab3">
+        <WTabs tabs={tabs4} query="main" defaultValue="tab3">
           <div className="bg-gray-50 rounded">
-            <TabsContent value="tab1">
+            <WTabsContent value="tab1">
               <p>Conteúdo 1</p>
-            </TabsContent>
-            <TabsContent value="tab2">
+            </WTabsContent>
+            <WTabsContent value="tab2">
               <p>Conteúdo 2</p>
-            </TabsContent>
-            <TabsContent value="tab3">
+            </WTabsContent>
+            <WTabsContent value="tab3">
               <p>Conteúdo 3</p>
-            </TabsContent>
+            </WTabsContent>
           </div>
-        </WoltzTab>
+        </WTabs>
       </div>
 
       <div className="mt-12 p-2 rounded-md border">
         <p className="text-xl text-primary mb-4">
           Variant: "Default" - Vertical - com Separator
         </p>
-        <WoltzTab
+        <WTabs
           tabs={tabs3}
-          queryName="main"
+          query="main"
           defaultValue="tab3"
           orientation="vertical"
         >
           <div className="bg-gray-50">
-            <TabsContent value="tab1">
+            <WTabsContent value="tab1">
               <p>Conteúdo 1</p>
-            </TabsContent>
-            <TabsContent value="tab2">
+            </WTabsContent>
+            <WTabsContent value="tab2">
               <p>Conteúdo 2</p>
-            </TabsContent>
-            <TabsContent value="tab3">
+            </WTabsContent>
+            <WTabsContent value="tab3">
               <p>Conteúdo 3</p>
-            </TabsContent>
+            </WTabsContent>
           </div>
-        </WoltzTab>
+        </WTabs>
       </div>
     </div>
   );

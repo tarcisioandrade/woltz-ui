@@ -82,42 +82,42 @@ interface Separator {
   icon?: never;
 }
 
-export type WoltzTabItem = TabItem | Separator;
+export type WTabsItem = TabItem | Separator;
 
 type UI = {
   list?: ClassValue;
   trigger?: ClassValue;
 };
 
-interface WoltzTabProps
+interface WTabsProps
   extends Omit<ComponentProps<typeof Tabs>, "onChange" | "orientation">,
     VariantProps<typeof tabTriggerVariants> {
-  tabs: WoltzTabItem[];
+  tabs: WTabsItem[];
   activeColor?: string;
-  queryName?: string;
+  query?: string;
   ui?: UI;
 }
 
-export function WoltzTab({
+export function WTabs({
   tabs,
   children,
   onValueChange,
-  queryName,
+  query,
   defaultValue,
   className,
   orientation = "horizontal",
   variant,
   ui,
   ...props
-}: WoltzTabProps) {
-  const [query, setQuery] = useQueryState(queryName ?? "");
+}: WTabsProps) {
+  const [queryValue, setQuery] = useQueryState(query ?? "");
   const [selected, setSelected] = useState<string | null>(
     (query || defaultValue) ?? null
   );
 
   function handleSelected(value: string) {
     setSelected(value);
-    if (queryName) setQuery(value);
+    if (queryValue) setQuery(value);
     onValueChange?.(value);
   }
 
@@ -179,8 +179,8 @@ export function WoltzTab({
   );
 }
 
-type WoltzTabContentProps = ComponentProps<typeof TabsContent>;
+type WTabsContentProps = ComponentProps<typeof TabsContent>;
 
-export function WoltzTabContent({ children, ...props }: WoltzTabContentProps) {
+export function WTabsContent({ children, ...props }: WTabsContentProps) {
   return <TabsContent {...props}>{children}</TabsContent>;
 }
