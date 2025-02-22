@@ -40,45 +40,44 @@ const tabs2: WTabsItem[] = [
 
 const tabs3: WTabsItem[] = [
   {
-    icon: Check,
-    title: "Tab1",
-    value: "tab1",
-  },
-
-  {
     icon: Mail,
-    title: "Tab2",
-    value: "tab2",
+    title: "Drive",
+    value: "drive",
   },
   {
     icon: AppWindow,
-    title: "Tab3",
-    value: "tab3",
+    title: "Propostas",
+    value: "proposal",
   },
   {
     icon: AppWindow,
-    title: "Tab4",
-    value: "tab4",
+    title: "Contrato",
+    value: "contrato",
   },
   {
     icon: AppWindow,
-    title: "Tab5",
-    value: "tab5",
+    title: "Timeline",
+    value: "timeline",
   },
   {
     icon: AppWindow,
-    title: "Tab6",
-    value: "tab6",
+    title: "Comunicação",
+    value: "comunicacao",
   },
   {
     icon: AppWindow,
-    title: "Tab7",
-    value: "tab7",
+    title: "Remuneração",
+    value: "remuneracao",
   },
   {
     icon: AppWindow,
-    title: "Tab8",
-    value: "tab8",
+    title: "Unidades",
+    value: "unidades",
+  },
+  {
+    icon: AppWindow,
+    title: "Seleção Natural",
+    value: "selection",
   },
 ];
 
@@ -147,16 +146,28 @@ function App() {
         <p className="text-xl text-primary mb-4">
           Variant: "Default" - Horizontal
         </p>
-        <WTabs tabs={tabs4} query="main" defaultValue="tab3">
+        <WTabs tabs={tabs3} query="main" defaultValue="tab3">
           <div className="bg-gray-50 rounded">
-            <WTabsContent value="tab1">
+            <WTabsContent value="proposal">
               <p>Conteúdo 1</p>
             </WTabsContent>
-            <WTabsContent value="tab2">
+            <WTabsContent value="drive">
               <p>Conteúdo 2</p>
             </WTabsContent>
-            <WTabsContent value="tab3">
-              <p>Conteúdo 3</p>
+            <WTabsContent value="remuneracao">
+              <p>remuneracao</p>
+            </WTabsContent>
+            <WTabsContent value="unidades">
+              <p>unidades</p>
+            </WTabsContent>
+            <WTabsContent value="timeline">
+              <p>timeline</p>
+            </WTabsContent>
+            <WTabsContent value="contrato">
+              <p>contrato</p>
+            </WTabsContent>
+            <WTabsContent value="comunicacao">
+              <p>comunicacao</p>
             </WTabsContent>
           </div>
         </WTabs>
@@ -164,23 +175,35 @@ function App() {
 
       <div className="mt-12 p-2 rounded-md border">
         <p className="text-xl text-primary mb-4">
-          Variant: "Default" - Vertical - com Separator
+          Variant: "Default" - Vertical
         </p>
         <WTabs
           tabs={tabs3}
-          query="main"
-          defaultValue="tab3"
+          query="lead"
+          defaultValue="drive"
           orientation="vertical"
         >
           <div className="bg-gray-50">
-            <WTabsContent value="tab1">
+            <WTabsContent value="proposal">
               <p>Conteúdo 1</p>
             </WTabsContent>
-            <WTabsContent value="tab2">
+            <WTabsContent value="drive">
               <p>Conteúdo 2</p>
             </WTabsContent>
-            <WTabsContent value="tab3">
-              <p>Conteúdo 3</p>
+            <WTabsContent value="remuneracao">
+              <p>remuneracao</p>
+            </WTabsContent>
+            <WTabsContent value="unidades">
+              <p>unidades</p>
+            </WTabsContent>
+            <WTabsContent value="timeline">
+              <p>timeline</p>
+            </WTabsContent>
+            <WTabsContent value="contrato">
+              <p>contrato</p>
+            </WTabsContent>
+            <WTabsContent value="comunicacao">
+              <p>comunicacao</p>
             </WTabsContent>
           </div>
         </WTabs>

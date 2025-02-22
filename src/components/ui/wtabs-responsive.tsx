@@ -2,7 +2,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { useQueryState } from "nuqs";
-import { LucideIcon, MoreHorizontal } from "lucide-react";
+import { AlignJustify, LucideIcon } from "lucide-react";
 import { ComponentProps, useEffect, useRef, useState } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { ClassValue } from "clsx";
@@ -14,41 +14,45 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "./button";
 
-const tabTriggerVariants = cva("data-[state=active]:shadow-none", {
-  variants: {
-    variant: {
-      line: "relative after:absolute hover:text-foreground data-[state=active]:bg-transparent data-[state=active]:after:bg-primary data-[state=active]:text-primary text-muted-foreground",
-      default: "data-[state=active]:bg-muted data-[state=active]:text-primary",
+const tabTriggerVariants = cva(
+  "data-[state=active]:shadow-none text-muted-foreground hover:text-foreground",
+  {
+    variants: {
+      variant: {
+        line: "relative after:absolute data-[state=active]:bg-transparent data-[state=active]:after:bg-primary data-[state=active]:text-primary",
+        default:
+          "data-[state=active]:bg-background data-[state=active]:text-primary",
+      },
+      orientation: {
+        horizontal:
+          "after:absolute after:inset-x-0 after:bottom-0 after:-mb-1 after:h-0.5",
+        vertical: "w-full justify-start",
+      },
     },
-    orientation: {
-      horizontal:
-        "after:absolute after:inset-x-0 after:bottom-0 after:-mb-1 after:h-0.5",
-      vertical: "w-full justify-start",
+    defaultVariants: {
+      variant: "default",
+      orientation: "horizontal",
     },
-  },
-  defaultVariants: {
-    variant: "default",
-    orientation: "horizontal",
-  },
-  compoundVariants: [
-    {
-      variant: "line",
-      orientation: "vertical",
-      className:
-        "after:inset-y-0 after:right-0 after:-mr-1 after:w-0.5 after:h-auto after:start-0 rounded-none w-full justify-start",
-    },
-  ],
-});
+    compoundVariants: [
+      {
+        variant: "line",
+        orientation: "vertical",
+        className:
+          "after:inset-y-0 after:right-0 after:-mr-1 after:w-0.5 after:h-auto after:start-0 rounded-none w-full justify-start",
+      },
+    ],
+  }
+);
 
-const tabListVariants = cva("h-auto gap-2 w-full justify-start", {
+const tabListVariants = cva("h-auto gap-2 w-full justify-start py-1", {
   variants: {
     variant: {
-      line: "border-b border-border border-b-text-bl bg-transparent px-0 py-1 text-foreground",
-      default: "rounded-none bg-transparent px-0 py-1",
+      line: "border-b bg-transparent text-foreground",
+      default: "rounded-lg bg-secondary",
     },
     orientation: {
-      horizontal: "rounded-none",
-      vertical: "flex-col py-0 gap-1 bg-transparent",
+      horizontal: "px-1",
+      vertical: "flex-col p-1 gap-1 w-max",
     },
   },
   defaultVariants: {
@@ -62,6 +66,18 @@ const tabListVariants = cva("h-auto gap-2 w-full justify-start", {
       className: "border-b-0",
     },
   ],
+});
+
+const tabsContainerVariants = cva("", {
+  variants: {
+    orientation: {
+      horizontal: "",
+      vertical: "flex w-full gap-2",
+    },
+  },
+  defaultVariants: {
+    orientation: "horizontal",
+  },
 });
 
 export interface TabItem {
@@ -100,12 +116,14 @@ function AdaptiveTabList({
   onSelect,
   variant,
   ui,
+  orientation,
 }: {
   tabs: WTabsItem[];
   selected: string;
   onSelect: (value: string) => void;
   variant?: "line" | "default";
   ui?: UI;
+  orientation?: WTabsProps["orientation"];
 }) {
   const [measurements, setMeasurements] = useState<TabMeasurements>({});
   const [visibleCount, setVisibleCount] = useState(tabs.length);
@@ -113,8 +131,10 @@ function AdaptiveTabList({
   const measureRef = useRef<HTMLDivElement>(null);
   const initializedRef = useRef(false);
 
+  const IS_VERTICAL = orientation === "vertical";
+
   useEffect(() => {
-    if (!measureRef.current || !listRef.current) return;
+    if (!measureRef.current || !listRef.current || IS_VERTICAL) return;
 
     const measureTabs = () => {
       const tabElements = measureRef.current?.querySelectorAll(".measure-tab");
@@ -157,10 +177,11 @@ function AdaptiveTabList({
       const tabWidth = measurements[tab.value] || 0;
       const nextWidth = totalWidth + tabWidth;
 
-      if (
+      const haveSpaceForMoreTab =
         nextWidth + (count < tabs.length - 1 ? moreButtonWidth : 0) <=
-        availableWidth
-      ) {
+        availableWidth;
+
+      if (haveSpaceForMoreTab) {
         totalWidth = nextWidth;
         count++;
       } else {
@@ -181,25 +202,30 @@ function AdaptiveTabList({
 
   return (
     <>
-      <div
-        ref={measureRef}
-        className="absolute -left-full invisible"
-        aria-hidden="true"
-      >
-        {tabs.map((tab) => (
-          <div
-            key={`measure-${tab.value}`}
-            className="measure-tab inline-flex items-center px-4 py-2"
-          >
-            {tab.icon && <tab.icon className="mr-2" size={20} />}
-            <span>{tab.title}</span>
-          </div>
-        ))}
-      </div>
+      {!IS_VERTICAL && (
+        <div
+          ref={measureRef}
+          className="absolute -left-full invisible"
+          aria-hidden="true"
+        >
+          {tabs.map((tab) => (
+            <div
+              key={`measure-${tab.value}`}
+              className="measure-tab inline-flex items-center px-4 py-2"
+            >
+              {tab.icon && <tab.icon className="mr-2" size={20} />}
+              <span>{tab.title}</span>
+            </div>
+          ))}
+        </div>
+      )}
 
       <TabsList
         ref={listRef}
-        className={cn(tabListVariants({ variant }), ui?.triggerList)}
+        className={cn(
+          tabListVariants({ variant, orientation }),
+          ui?.triggerList
+        )}
       >
         {visibleTabs.map((tab) => {
           const Icon = tab.icon;
@@ -207,7 +233,10 @@ function AdaptiveTabList({
             <TabsTrigger
               key={tab.value}
               value={tab.value}
-              className={cn(tabTriggerVariants({ variant }), ui?.trigger)}
+              className={cn(
+                tabTriggerVariants({ variant, orientation }),
+                ui?.trigger
+              )}
             >
               {Icon && <Icon className="mr-2" size={20} />}
               {tab.title}
@@ -223,7 +252,7 @@ function AdaptiveTabList({
                 size="sm"
                 className="h-9 px-2 hover:bg-accent"
               >
-                <MoreHorizontal className="h-4 w-4" />
+                <AlignJustify className="size-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
@@ -286,7 +315,7 @@ export function WTabs({
       value={selected}
       onValueChange={handleSelected}
       defaultValue={selected}
-      className={className}
+      className={cn(tabsContainerVariants({ orientation }), className)}
       orientation={orientation ?? undefined}
       {...props}
     >
@@ -295,9 +324,16 @@ export function WTabs({
         selected={selected}
         onSelect={handleSelected}
         variant={variant ?? undefined}
+        orientation={orientation ?? undefined}
         ui={ui}
       />
-      {children}
+      {orientation === "vertical" ? (
+        <div className="grow rounded-lg border border-border text-start">
+          {children}
+        </div>
+      ) : (
+        children
+      )}
     </Tabs>
   );
 }
