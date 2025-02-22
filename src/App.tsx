@@ -10,12 +10,10 @@ const tabs: WTabsItem[] = [
     title: "Tab1",
     value: "tab1",
   },
-  { type: "separator" },
   {
     title: "Tab2",
     value: "tab2",
   },
-  { type: "separator" },
   {
     title: "Tab3",
     value: "tab3",
@@ -46,17 +44,41 @@ const tabs3: WTabsItem[] = [
     title: "Tab1",
     value: "tab1",
   },
-  { type: "separator" },
+
   {
     icon: Mail,
     title: "Tab2",
     value: "tab2",
   },
-  { type: "separator" },
   {
     icon: AppWindow,
     title: "Tab3",
     value: "tab3",
+  },
+  {
+    icon: AppWindow,
+    title: "Tab4",
+    value: "tab4",
+  },
+  {
+    icon: AppWindow,
+    title: "Tab5",
+    value: "tab5",
+  },
+  {
+    icon: AppWindow,
+    title: "Tab6",
+    value: "tab6",
+  },
+  {
+    icon: AppWindow,
+    title: "Tab7",
+    value: "tab7",
+  },
+  {
+    icon: AppWindow,
+    title: "Tab8",
+    value: "tab8",
   },
 ];
 
@@ -86,17 +108,15 @@ function App() {
           Variant: "Line" - Horizontal - com Separator
         </p>
         <WTabs tabs={tabs} query="main" defaultValue="tab3" variant="line">
-          <div className="bg-gray-50 rounded">
-            <WTabsContent value="tab1">
-              <p>Conteúdo 1</p>
-            </WTabsContent>
-            <WTabsContent value="tab2">
-              <p>Conteúdo 2</p>
-            </WTabsContent>
-            <WTabsContent value="tab3">
-              <p>Conteúdo 3</p>
-            </WTabsContent>
-          </div>
+          <WTabsContent className="bg-red-500" value="tab1">
+            <p>Conteúdo 1</p>
+          </WTabsContent>
+          <WTabsContent value="tab2">
+            <p>Conteúdo 2</p>
+          </WTabsContent>
+          <WTabsContent value="tab3">
+            <p>Conteúdo 3</p>
+          </WTabsContent>
         </WTabs>
       </div>
 
@@ -104,7 +124,7 @@ function App() {
         <p className="text-xl text-primary mb-4">Variant: "Line" - Vertical</p>
         <WTabs
           tabs={tabs2}
-          query="main"
+          query="vertical"
           defaultValue="tab3"
           variant="line"
           orientation="vertical"
