@@ -15,7 +15,7 @@ import {
 import { Button } from "./button";
 
 const tabTriggerVariants = cva(
-  "data-[state=active]:shadow-none text-muted-foreground hover:text-foreground",
+  "data-[state=active]:shadow-none text-muted-foreground hover:text-foreground h-8",
   {
     variants: {
       variant: {
@@ -44,35 +44,38 @@ const tabTriggerVariants = cva(
   }
 );
 
-const tabListVariants = cva("h-auto gap-2 w-full justify-start py-1", {
-  variants: {
-    variant: {
-      line: "border-b bg-transparent text-foreground",
-      default: "rounded-lg bg-secondary",
+const tabListVariants = cva(
+  "min-h-[45px] gap-2 w-full justify-start py-1 overflow-x-hidden",
+  {
+    variants: {
+      variant: {
+        line: "border-b bg-transparent text-foreground",
+        default: "rounded-lg bg-secondary",
+      },
+      orientation: {
+        horizontal: "px-1 transition-opacity duration-300 flex-wrap",
+        vertical: "flex-col p-1 gap-1 w-max",
+      },
     },
-    orientation: {
-      horizontal: "px-1",
-      vertical: "flex-col p-1 gap-1 w-max",
+    defaultVariants: {
+      variant: "default",
+      orientation: "horizontal",
     },
-  },
-  defaultVariants: {
-    variant: "default",
-    orientation: "horizontal",
-  },
-  compoundVariants: [
-    {
-      variant: "line",
-      orientation: "vertical",
-      className: "border-b-0",
-    },
-  ],
-});
+    compoundVariants: [
+      {
+        variant: "line",
+        orientation: "vertical",
+        className: "border-b-0",
+      },
+    ],
+  }
+);
 
-const tabsContainerVariants = cva("", {
+const tabsContainerVariants = cva("w-full", {
   variants: {
     orientation: {
       horizontal: "",
-      vertical: "flex w-full gap-2",
+      vertical: "flex gap-2",
     },
   },
   defaultVariants: {
@@ -85,8 +88,6 @@ export interface TabItem {
   value: string;
   icon?: LucideIcon;
 }
-
-export type WTabsItem = TabItem;
 
 type UI = {
   triggerList?: ClassValue;
@@ -101,9 +102,18 @@ type UI = {
 interface WTabsProps
   extends Omit<ComponentProps<typeof Tabs>, "onChange" | "orientation">,
     VariantProps<typeof tabTriggerVariants> {
-  tabs: WTabsItem[];
+  tabs: TabItem[];
   query?: string;
   ui?: UI;
+}
+
+interface WAdaptiveTabsListProps
+  extends VariantProps<typeof tabTriggerVariants> {
+  tabs: TabItem[];
+  selected: string;
+  onSelect: (value: string) => void;
+  ui?: UI;
+  orientation?: WTabsProps["orientation"];
 }
 
 interface TabMeasurements {
@@ -117,24 +127,22 @@ function AdaptiveTabList({
   variant,
   ui,
   orientation,
-}: {
-  tabs: WTabsItem[];
-  selected: string;
-  onSelect: (value: string) => void;
-  variant?: "line" | "default";
-  ui?: UI;
-  orientation?: WTabsProps["orientation"];
-}) {
+}: WAdaptiveTabsListProps) {
+  const IS_VERTICAL = orientation === "vertical";
+  const DEFAULT_VISIBLE_COUNT = IS_VERTICAL ? tabs.length : 0;
+
   const [measurements, setMeasurements] = useState<TabMeasurements>({});
-  const [visibleCount, setVisibleCount] = useState(tabs.length);
+  const [visibleCount, setVisibleCount] = useState(DEFAULT_VISIBLE_COUNT);
+  const [isInitialized, setIsInitialized] = useState(false);
+
   const listRef = useRef<HTMLDivElement>(null);
   const measureRef = useRef<HTMLDivElement>(null);
-  const initializedRef = useRef(false);
-
-  const IS_VERTICAL = orientation === "vertical";
 
   useEffect(() => {
-    if (!measureRef.current || !listRef.current || IS_VERTICAL) return;
+    if (!measureRef.current || !listRef.current || IS_VERTICAL) {
+      setIsInitialized(true);
+      return;
+    }
 
     const measureTabs = () => {
       const tabElements = measureRef.current?.querySelectorAll(".measure-tab");
@@ -146,56 +154,78 @@ function AdaptiveTabList({
             tab.getBoundingClientRect().width;
         }
       });
-      initializedRef.current = true;
+
       setMeasurements(newMeasurements);
+
+      const containerWidth = listRef.current?.offsetWidth || 0;
+      const moreButtonWidth = 50;
+      const availableWidth = containerWidth;
+      let count = 0;
+      let totalWidth = 0;
+
+      for (const tab of tabs) {
+        const tabWidth = newMeasurements[tab.value] || 0;
+        const nextWidth = totalWidth + tabWidth;
+
+        const haveSpaceForMoreTab =
+          nextWidth + (count < tabs.length - 1 ? moreButtonWidth : 0) <=
+          availableWidth;
+
+        if (haveSpaceForMoreTab) {
+          totalWidth = nextWidth;
+          count++;
+        } else {
+          break;
+        }
+      }
+
+      setVisibleCount(count);
+      requestAnimationFrame(() => {
+        setIsInitialized(true);
+      });
     };
 
-    measureTabs();
+    const timeoutId = setTimeout(() => {
+      requestAnimationFrame(measureTabs);
+    }, 0);
 
-    const resizeObserver = new ResizeObserver(() => {
-      if (listRef.current) {
-        updateVisibleTabs(measurements);
-      }
-    });
-    resizeObserver.observe(listRef.current);
-
-    return () => void resizeObserver.disconnect();
-  }, [measureRef.current, listRef.current]);
-
-  const updateVisibleTabs = (measurements: TabMeasurements) => {
-    if (!listRef.current || !initializedRef.current) {
-      return;
-    }
-
-    const containerWidth = listRef.current.offsetWidth;
-    const moreButtonWidth = 50;
-    const availableWidth = containerWidth;
-    let count = 0;
-    let totalWidth = 0;
-
-    for (const tab of tabs) {
-      const tabWidth = measurements[tab.value] || 0;
-      const nextWidth = totalWidth + tabWidth;
-
-      const haveSpaceForMoreTab =
-        nextWidth + (count < tabs.length - 1 ? moreButtonWidth : 0) <=
-        availableWidth;
-
-      if (haveSpaceForMoreTab) {
-        totalWidth = nextWidth;
-        count++;
-      } else {
-        break;
-      }
-    }
-    setVisibleCount(count);
-  };
+    return () => void clearTimeout(timeoutId);
+  }, [tabs, IS_VERTICAL]);
 
   useEffect(() => {
-    if (initializedRef.current) {
-      updateVisibleTabs(measurements);
-    }
-  }, [measurements, initializedRef.current]);
+    if (IS_VERTICAL) return;
+
+    const currentListRef = listRef.current;
+    if (!currentListRef) return;
+
+    const resizeObserver = new ResizeObserver(() => {
+      const containerWidth = currentListRef.offsetWidth;
+      const moreButtonWidth = 50;
+      const availableWidth = containerWidth;
+      let count = 0;
+      let totalWidth = 0;
+
+      for (const tab of tabs) {
+        const tabWidth = measurements[tab.value] || 0;
+        const nextWidth = totalWidth + tabWidth;
+
+        const haveSpaceForMoreTab =
+          nextWidth + (count < tabs.length - 1 ? moreButtonWidth : 0) <=
+          availableWidth;
+
+        if (haveSpaceForMoreTab) {
+          totalWidth = nextWidth;
+          count++;
+        } else {
+          break;
+        }
+      }
+      setVisibleCount(count);
+    });
+
+    resizeObserver.observe(currentListRef);
+    return () => void resizeObserver.disconnect();
+  }, [measurements, tabs, IS_VERTICAL]);
 
   const visibleTabs = tabs.slice(0, visibleCount);
   const overflowTabs = tabs.slice(visibleCount);
@@ -224,7 +254,8 @@ function AdaptiveTabList({
         ref={listRef}
         className={cn(
           tabListVariants({ variant, orientation }),
-          ui?.triggerList
+          ui?.triggerList,
+          !isInitialized && !IS_VERTICAL && "opacity-0"
         )}
       >
         {visibleTabs.map((tab) => {
@@ -280,7 +311,6 @@ function AdaptiveTabList({
     </>
   );
 }
-
 export function WTabs({
   tabs,
   children,
