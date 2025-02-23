@@ -15,7 +15,7 @@ import {
 import { Button } from "./button";
 
 const tabTriggerVariants = cva(
-  "data-[state=active]:shadow-none text-muted-foreground hover:text-foreground h-8",
+  "data-[state=active]:shadow-none text-muted-foreground hover:text-foreground h-8 transition-colors",
   {
     variants: {
       variant: {
@@ -44,32 +44,29 @@ const tabTriggerVariants = cva(
   }
 );
 
-const tabListVariants = cva(
-  "min-h-[45px] gap-2 w-full justify-start py-1 overflow-x-hidden",
-  {
-    variants: {
-      variant: {
-        line: "border-b bg-transparent text-foreground",
-        default: "rounded-lg bg-secondary",
-      },
-      orientation: {
-        horizontal: "px-1 transition-opacity duration-300 flex-wrap",
-        vertical: "flex-col p-1 gap-1 w-max",
-      },
+const tabListVariants = cva("gap-2 w-full justify-start", {
+  variants: {
+    variant: {
+      line: "border-b bg-transparent text-foreground",
+      default: "rounded-lg bg-secondary",
     },
-    defaultVariants: {
-      variant: "default",
-      orientation: "horizontal",
+    orientation: {
+      horizontal: "px-1 transition-opacity duration-300 flex-wrap max-h-[42px]",
+      vertical: "flex-col p-1 gap-1 w-max",
     },
-    compoundVariants: [
-      {
-        variant: "line",
-        orientation: "vertical",
-        className: "border-b-0",
-      },
-    ],
-  }
-);
+  },
+  defaultVariants: {
+    variant: "default",
+    orientation: "horizontal",
+  },
+  compoundVariants: [
+    {
+      variant: "line",
+      orientation: "vertical",
+      className: "border-b-0",
+    },
+  ],
+});
 
 const tabsContainerVariants = cva("w-full", {
   variants: {
@@ -229,6 +226,9 @@ function AdaptiveTabList({
 
   const visibleTabs = tabs.slice(0, visibleCount);
   const overflowTabs = tabs.slice(visibleCount);
+  const TAB_SELECTED_IS_IN_OVERFLOW = overflowTabs.find(
+    (tab) => tab.value === selected
+  );
 
   return (
     <>
@@ -281,7 +281,10 @@ function AdaptiveTabList({
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-9 px-2 hover:bg-accent"
+                className={cn(
+                  "h-9 px-2 hover:bg-accent text-muted-foreground",
+                  TAB_SELECTED_IS_IN_OVERFLOW && "text-primary"
+                )}
               >
                 <AlignJustify className="size-4" />
               </Button>

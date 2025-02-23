@@ -100,8 +100,8 @@ function App() {
         </header>
         <div className="p-4">
           <h1 className="text-3xl">Main Page</h1>
-          <div className="bg-accent rounded-lg flex gap-2 w-full">
-            <div className="bg-blue-200 w-96 h-[calc(100vh-56px-64px-16px)]">
+          <div className="bg-accent rounded-lg flex gap-w w-full h-[calc(100vh-56px-64px-16px)]">
+            <div className="bg-blue-200 w-96">
               <ul className="space-y-6">
                 <li>Home</li>
                 <li>CRM</li>
@@ -115,21 +115,23 @@ function App() {
               defaultValue="contrato"
               variant="line"
             >
-              <WTabsContent value="contrato">
-                <h1>Contrato</h1>
-              </WTabsContent>
-              <WTabsContent value="propostas">
-                <h1>Propostas</h1>
-              </WTabsContent>
-              <WTabsContent value="timeline">
-                <h1>Timeline</h1>
-              </WTabsContent>
-              <WTabsContent value="comunicacao">
-                <h1>Comunicação</h1>
-              </WTabsContent>
-              <WTabsContent value="drive">
-                <h1>Drive</h1>
-              </WTabsContent>
+              <div className="p-4">
+                <WTabsContent value="contrato">
+                  <h1>Contrato</h1>
+                </WTabsContent>
+                <WTabsContent value="propostas">
+                  <h1>Propostas</h1>
+                </WTabsContent>
+                <WTabsContent value="timeline">
+                  <h1>Timeline</h1>
+                </WTabsContent>
+                <WTabsContent value="comunicacao">
+                  <h1>Comunicação</h1>
+                </WTabsContent>
+                <WTabsContent value="drive">
+                  <h1>Drive</h1>
+                </WTabsContent>
+              </div>
             </WTabs>
           </div>
         </div>

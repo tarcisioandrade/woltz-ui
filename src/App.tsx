@@ -1,4 +1,4 @@
-import { AppWindow, Check, Mail } from "lucide-react";
+import { AppWindow, Mail } from "lucide-react";
 import { WTabs, TabItem, WTabsContent } from "./components/ui/wtabs-responsive";
 
 const tabs3: TabItem[] = [
