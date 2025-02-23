@@ -1,38 +1,14 @@
-import { AppWindow, Check, Mail } from "lucide-react";
+import {
+  Bean,
+  CalendarCheck2,
+  Check,
+  CircleUser,
+  Earth,
+  Ham,
+  Link,
+  Mail
+} from "lucide-react";
 import { WTabs, TabItem, WTabsContent } from "./components/ui/wtabs-responsive";
-
-const tabs: TabItem[] = [
-  {
-    title: "Tab1",
-    value: "tab1",
-  },
-  {
-    title: "Tab2",
-    value: "tab2",
-  },
-  {
-    title: "Tab3",
-    value: "tab3",
-  },
-];
-
-const tabs2: TabItem[] = [
-  {
-    icon: Check,
-    title: "Tab1",
-    value: "tab1",
-  },
-  {
-    icon: Mail,
-    title: "Tab2",
-    value: "tab2",
-  },
-  {
-    icon: AppWindow,
-    title: "Tab3",
-    value: "tab3",
-  },
-];
 
 const tabs3: TabItem[] = [
   {
@@ -41,37 +17,37 @@ const tabs3: TabItem[] = [
     value: "drive",
   },
   {
-    icon: AppWindow,
+    icon: Check,
     title: "Propostas",
     value: "proposal",
   },
   {
-    icon: AppWindow,
+    icon: Bean,
     title: "Contrato",
     value: "contrato",
   },
   {
-    icon: AppWindow,
+    icon: CalendarCheck2,
     title: "Timeline",
     value: "timeline",
   },
   {
-    icon: AppWindow,
+    icon: CircleUser,
     title: "Comunicação",
     value: "comunicacao",
   },
   {
-    icon: AppWindow,
+    icon: Earth,
     title: "Remuneração",
     value: "remuneracao",
   },
   {
-    icon: AppWindow,
+    icon: Ham,
     title: "Unidades",
     value: "unidades",
   },
   {
-    icon: AppWindow,
+    icon: Link,
     title: "Seleção Natural",
     value: "selection",
   },
@@ -79,42 +55,74 @@ const tabs3: TabItem[] = [
 
 export default function Apresentation() {
   return (
-    <div className="py-6 container mx-auto">
+    <div className="py-6 max-w-screen-md mx-auto">
       <div className="p-2 rounded-md border">
         <p className="text-xl text-primary mb-4">
           Variant: "Line" - Horizontal
         </p>
-        <WTabs tabs={tabs} query="main" defaultValue="tab3" variant="line">
-          <WTabsContent value="tab1">
-            <p>Conteúdo 1</p>
-          </WTabsContent>
-          <WTabsContent value="tab2">
-            <p>Conteúdo 2</p>
-          </WTabsContent>
-          <WTabsContent value="tab3">
-            <p>Conteúdo 3</p>
-          </WTabsContent>
+        <WTabs tabs={tabs3} query="lead" defaultValue="proposal" variant="line">
+          <div className="bg-gray-50 rounded">
+            <WTabsContent value="proposal">
+              <p>Conteúdo 1</p>
+            </WTabsContent>
+            <WTabsContent value="drive">
+              <p>Conteúdo 2</p>
+            </WTabsContent>
+            <WTabsContent value="remuneracao">
+              <p>remuneracao</p>
+            </WTabsContent>
+            <WTabsContent value="unidades">
+              <p>unidades</p>
+            </WTabsContent>
+            <WTabsContent value="timeline">
+              <p>timeline</p>
+            </WTabsContent>
+            <WTabsContent value="contrato">
+              <p>contrato</p>
+            </WTabsContent>
+            <WTabsContent value="comunicacao">
+              <p>comunicacao</p>
+            </WTabsContent>
+            <WTabsContent value="selection">
+              <p>selection</p>
+            </WTabsContent>
+          </div>
         </WTabs>
       </div>
 
       <div className="mt-12 p-2 rounded-md border">
         <p className="text-xl text-primary mb-4">Variant: "Line" - Vertical</p>
         <WTabs
-          tabs={tabs2}
+          tabs={tabs3}
           query="vertical"
-          defaultValue="tab3"
-          variant="line"
           orientation="vertical"
+          variant="line"
+          defaultValue="proposal"
         >
           <div className="bg-gray-50 rounded">
-            <WTabsContent value="tab1">
+            <WTabsContent value="proposal">
               <p>Conteúdo 1</p>
             </WTabsContent>
-            <WTabsContent value="tab2">
+            <WTabsContent value="drive">
               <p>Conteúdo 2</p>
             </WTabsContent>
-            <WTabsContent value="tab3">
-              <p>Conteúdo 3</p>
+            <WTabsContent value="remuneracao">
+              <p>remuneracao</p>
+            </WTabsContent>
+            <WTabsContent value="unidades">
+              <p>unidades</p>
+            </WTabsContent>
+            <WTabsContent value="timeline">
+              <p>timeline</p>
+            </WTabsContent>
+            <WTabsContent value="contrato">
+              <p>contrato</p>
+            </WTabsContent>
+            <WTabsContent value="comunicacao">
+              <p>comunicacao</p>
+            </WTabsContent>
+            <WTabsContent value="selection">
+              <p>selection</p>
             </WTabsContent>
           </div>
         </WTabs>
@@ -124,7 +132,7 @@ export default function Apresentation() {
         <p className="text-xl text-primary mb-4">
           Variant: "Default" - Horizontal
         </p>
-        <WTabs tabs={tabs3} query="lead" defaultValue="tab3">
+        <WTabs tabs={tabs3} query="lead" defaultValue="proposal">
           <div className="bg-gray-50 rounded">
             <WTabsContent value="proposal">
               <p>Conteúdo 1</p>
@@ -161,7 +169,7 @@ export default function Apresentation() {
         <WTabs
           tabs={tabs3}
           query="lead"
-          defaultValue="drive"
+          defaultValue="proposal"
           orientation="vertical"
         >
           <div className="bg-gray-50">

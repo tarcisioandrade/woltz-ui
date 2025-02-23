@@ -255,7 +255,10 @@ function AdaptiveTabList({
           {tabs.map((tab) => (
             <div
               key={`measure-${tab.value}`}
-              className="measure-tab inline-flex items-center px-4 py-2"
+              className={cn(
+                "measure-tab inline-flex items-center px-4 py-2",
+                ui?.trigger
+              )}
             >
               {tab.icon && <tab.icon className="mr-2" size={20} />}
               <span>{tab.title}</span>
@@ -283,7 +286,7 @@ function AdaptiveTabList({
                 ui?.trigger
               )}
             >
-              {Icon && <Icon className="mr-2" size={20} />}
+              {Icon && <Icon className="mr-2 flex-shrink-0" size={20} />}
               {tab.title}
             </TabsTrigger>
           );
@@ -356,7 +359,7 @@ export function WTabs({
   }
 
   useEffect(function setDefaultQueryName() {
-    if (queryValue) setQuery(queryValue);
+    if (selected) setQuery(selected);
   }, []);
 
   if (!tabs.length) return null;
