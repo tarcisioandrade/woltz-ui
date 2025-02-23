@@ -82,10 +82,10 @@ export default function Apresentation() {
     <div className="py-6 container mx-auto">
       <div className="p-2 rounded-md border">
         <p className="text-xl text-primary mb-4">
-          Variant: "Line" - Horizontal - com Separator
+          Variant: "Line" - Horizontal
         </p>
         <WTabs tabs={tabs} query="main" defaultValue="tab3" variant="line">
-          <WTabsContent className="bg-red-500" value="tab1">
+          <WTabsContent value="tab1">
             <p>Conteúdo 1</p>
           </WTabsContent>
           <WTabsContent value="tab2">
@@ -124,7 +124,7 @@ export default function Apresentation() {
         <p className="text-xl text-primary mb-4">
           Variant: "Default" - Horizontal
         </p>
-        <WTabs tabs={tabs3} query="lead" defaultValue="tab3" variant="line">
+        <WTabs tabs={tabs3} query="lead" defaultValue="tab3">
           <div className="bg-gray-50 rounded">
             <WTabsContent value="proposal">
               <p>Conteúdo 1</p>
@@ -146,6 +146,9 @@ export default function Apresentation() {
             </WTabsContent>
             <WTabsContent value="comunicacao">
               <p>comunicacao</p>
+            </WTabsContent>
+            <WTabsContent value="selection">
+              <p>selection</p>
             </WTabsContent>
           </div>
         </WTabs>

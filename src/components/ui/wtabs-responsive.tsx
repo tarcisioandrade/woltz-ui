@@ -44,14 +44,14 @@ const tabTriggerVariants = cva(
   }
 );
 
-const tabListVariants = cva("gap-2 w-full justify-start", {
+const tabListVariants = cva("flex gap-2 w-full justify-start", {
   variants: {
     variant: {
-      line: "border-b bg-transparent text-foreground",
+      line: "border-b bg-transparent text-foreground rounded-none",
       default: "rounded-lg bg-secondary",
     },
     orientation: {
-      horizontal: "px-1 transition-opacity duration-300 flex-wrap max-h-[42px]",
+      horizontal: "transition-opacity duration-300 flex-wrap max-h-[42px]",
       vertical: "flex-col p-1 gap-1 w-max",
     },
   },
@@ -63,7 +63,17 @@ const tabListVariants = cva("gap-2 w-full justify-start", {
     {
       variant: "line",
       orientation: "vertical",
-      className: "border-b-0",
+      className: "border-b-0 border-l p-0",
+    },
+    {
+      variant: "line",
+      orientation: "horizontal",
+      className: "px-0 py-1",
+    },
+    {
+      variant: "default",
+      orientation: "horizontal",
+      className: "p-1",
     },
   ],
 });
@@ -117,6 +127,40 @@ interface TabMeasurements {
   [key: string]: number;
 }
 
+interface CalculateVisibleTabsProps {
+  measure: TabMeasurements;
+  containerWidth: number;
+  tabs: TabItem[];
+}
+
+function calculateVisibleTabs({
+  measure,
+  containerWidth,
+  tabs,
+}: CalculateVisibleTabsProps) {
+  const moreButtonWidth = 50;
+  const availableWidth = containerWidth;
+  let count = 0;
+  let totalWidth = 0;
+
+  for (const tab of tabs) {
+    const tabWidth = measure[tab.value] || 0;
+    const nextWidth = totalWidth + tabWidth;
+
+    const haveSpaceForMoreTab =
+      nextWidth + (count < tabs.length - 1 ? moreButtonWidth : 0) <=
+      availableWidth;
+
+    if (haveSpaceForMoreTab) {
+      totalWidth = nextWidth;
+      count++;
+    } else {
+      break;
+    }
+  }
+  return count;
+}
+
 function AdaptiveTabList({
   tabs,
   selected,
@@ -155,26 +199,11 @@ function AdaptiveTabList({
       setMeasurements(newMeasurements);
 
       const containerWidth = listRef.current?.offsetWidth || 0;
-      const moreButtonWidth = 50;
-      const availableWidth = containerWidth;
-      let count = 0;
-      let totalWidth = 0;
-
-      for (const tab of tabs) {
-        const tabWidth = newMeasurements[tab.value] || 0;
-        const nextWidth = totalWidth + tabWidth;
-
-        const haveSpaceForMoreTab =
-          nextWidth + (count < tabs.length - 1 ? moreButtonWidth : 0) <=
-          availableWidth;
-
-        if (haveSpaceForMoreTab) {
-          totalWidth = nextWidth;
-          count++;
-        } else {
-          break;
-        }
-      }
+      const count = calculateVisibleTabs({
+        tabs,
+        measure: newMeasurements,
+        containerWidth,
+      });
 
       setVisibleCount(count);
       requestAnimationFrame(() => {
@@ -196,31 +225,16 @@ function AdaptiveTabList({
     if (!currentListRef) return;
 
     const resizeObserver = new ResizeObserver(() => {
-      const containerWidth = currentListRef.offsetWidth;
-      const moreButtonWidth = 50;
-      const availableWidth = containerWidth;
-      let count = 0;
-      let totalWidth = 0;
+      const count = calculateVisibleTabs({
+        tabs,
+        measure: measurements,
+        containerWidth: currentListRef.offsetWidth,
+      });
 
-      for (const tab of tabs) {
-        const tabWidth = measurements[tab.value] || 0;
-        const nextWidth = totalWidth + tabWidth;
-
-        const haveSpaceForMoreTab =
-          nextWidth + (count < tabs.length - 1 ? moreButtonWidth : 0) <=
-          availableWidth;
-
-        if (haveSpaceForMoreTab) {
-          totalWidth = nextWidth;
-          count++;
-        } else {
-          break;
-        }
-      }
       setVisibleCount(count);
     });
-
     resizeObserver.observe(currentListRef);
+
     return () => void resizeObserver.disconnect();
   }, [measurements, tabs, IS_VERTICAL]);
 
@@ -283,13 +297,17 @@ function AdaptiveTabList({
                 size="sm"
                 className={cn(
                   "h-9 px-2 hover:bg-accent text-muted-foreground",
-                  TAB_SELECTED_IS_IN_OVERFLOW && "text-primary"
+                  TAB_SELECTED_IS_IN_OVERFLOW && "text-primary",
+                  ui?.dropdown?.trigger
                 )}
               >
                 <AlignJustify className="size-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48">
+            <DropdownMenuContent
+              align="end"
+              className={cn("w-48", ui?.dropdown?.content)}
+            >
               {overflowTabs.map((tab) => {
                 const Icon = tab.icon;
                 return (
@@ -356,8 +374,8 @@ export function WTabs({
         tabs={tabs}
         selected={selected}
         onSelect={handleSelected}
-        variant={variant ?? undefined}
-        orientation={orientation ?? undefined}
+        variant={variant}
+        orientation={orientation}
         ui={ui}
       />
       {orientation === "vertical" ? (
