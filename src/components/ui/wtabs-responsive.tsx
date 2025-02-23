@@ -15,7 +15,7 @@ import {
 import { Button } from "./button";
 
 const tabTriggerVariants = cva(
-  "data-[state=active]:shadow-none text-muted-foreground hover:text-foreground h-8 transition-colors",
+  "data-[state=active]:shadow-none text-muted-foreground hover:text-foreground h-8 transition-colors relative",
   {
     variants: {
       variant: {
@@ -94,11 +94,13 @@ export interface TabItem {
   title: string;
   value: string;
   icon?: LucideIcon;
+  unSeen?: number;
 }
 
 type UI = {
   triggerList?: ClassValue;
   trigger?: ClassValue;
+  unSeenBadge: ClassValue;
   dropdown?: {
     trigger?: ClassValue;
     content?: ClassValue;
@@ -262,6 +264,17 @@ function AdaptiveTabList({
             >
               {tab.icon && <tab.icon className="mr-2" size={20} />}
               <span>{tab.title}</span>
+              {tab.unSeen ? (
+                <span
+                  role="badge"
+                  className={cn(
+                    "inline-flex items-center justify-center whitespace-nowrap shrink-0 font-medium w-fit bg-primary text-white rounded-full leading-normal  ms-2 min-w-5 px-1 text-xs",
+                    ui?.unSeenBadge
+                  )}
+                >
+                  {tab.unSeen}
+                </span>
+              ) : null}
             </div>
           ))}
         </div>
@@ -286,8 +299,18 @@ function AdaptiveTabList({
                 ui?.trigger
               )}
             >
-              {Icon && <Icon className="mr-2 flex-shrink-0" size={20} />}
+              {Icon && <Icon className="me-2 shrink-0" size={20} />}
               {tab.title}
+              {tab.unSeen ? (
+                <span
+                  className={cn(
+                    "inline-flex items-center justify-center whitespace-nowrap shrink-0 font-medium w-fit bg-primary text-white rounded-full ms-2 min-w-5 px-1 text-xs size-5",
+                    ui?.unSeenBadge
+                  )}
+                >
+                  {tab.unSeen}
+                </span>
+              ) : null}
             </TabsTrigger>
           );
         })}
@@ -325,6 +348,16 @@ function AdaptiveTabList({
                   >
                     {Icon && <Icon size={20} />}
                     {tab.title}
+                    {tab.unSeen ? (
+                      <span
+                        className={cn(
+                          "inline-flex items-center justify-center whitespace-nowrap shrink-0 font-medium w-fit bg-primary text-white rounded-full !leading-normal  ms-2 min-w-5 px-1 text-xs",
+                          ui?.unSeenBadge
+                        )}
+                      >
+                        {tab.unSeen}
+                      </span>
+                    ) : null}
                   </DropdownMenuItem>
                 );
               })}

@@ -6,7 +6,7 @@ import {
   Earth,
   Ham,
   Link,
-  Mail
+  Mail,
 } from "lucide-react";
 import { WTabs, TabItem, WTabsContent } from "./components/ui/wtabs-responsive";
 
@@ -15,6 +15,7 @@ const tabs3: TabItem[] = [
     icon: Mail,
     title: "Drive",
     value: "drive",
+    unSeen: 3,
   },
   {
     icon: Check,
@@ -50,6 +51,7 @@ const tabs3: TabItem[] = [
     icon: Link,
     title: "Seleção Natural",
     value: "selection",
+    unSeen: 2,
   },
 ];
 
