@@ -15,7 +15,7 @@ import {
 import { Button } from "./button";
 
 const tabTriggerVariants = cva(
-  "data-[state=active]:shadow-none text-muted-foreground hover:text-foreground h-8 transition-colors relative",
+  "data-[state=active]:shadow-none text-muted-foreground hover:text-foreground h-8 transition-colors relative px-3 py-1.5",
   {
     variants: {
       variant: {
@@ -48,7 +48,7 @@ const tabListVariants = cva("flex gap-2 w-full justify-start", {
   variants: {
     variant: {
       line: "border-b bg-transparent text-foreground rounded-none",
-      default: "rounded-lg bg-secondary",
+      default: "rounded-md bg-secondary",
     },
     orientation: {
       horizontal: "transition-opacity duration-300 flex-wrap max-h-[42px]",
@@ -97,10 +97,10 @@ export interface TabItem {
   unSeen?: number;
 }
 
-type UI = {
+type TabsUI = {
   triggerList?: ClassValue;
   trigger?: ClassValue;
-  unSeenBadge: ClassValue;
+  unSeenBadge?: ClassValue;
   dropdown?: {
     trigger?: ClassValue;
     content?: ClassValue;
@@ -113,7 +113,7 @@ interface WTabsProps
     VariantProps<typeof tabTriggerVariants> {
   tabs: TabItem[];
   query?: string;
-  ui?: UI;
+  ui?: TabsUI;
 }
 
 interface WAdaptiveTabsListProps
@@ -121,7 +121,7 @@ interface WAdaptiveTabsListProps
   tabs: TabItem[];
   selected: string;
   onSelect: (value: string) => void;
-  ui?: UI;
+  ui?: TabsUI;
   orientation?: WTabsProps["orientation"];
 }
 
@@ -140,6 +140,7 @@ function calculateVisibleTabs({
   containerWidth,
   tabs,
 }: CalculateVisibleTabsProps) {
+  // TODO: Avaliar possiveis problemas do moreButtonWidth não se dinâmico
   const moreButtonWidth = 50;
   const availableWidth = containerWidth;
   let count = 0;
@@ -148,14 +149,21 @@ function calculateVisibleTabs({
   for (const tab of tabs) {
     const tabWidth = measure[tab.value] || 0;
     const nextWidth = totalWidth + tabWidth;
+    // TODO: Pegar dinamicamente o gap, padding left e right do tab list e adicionar no cálculo.
+    const gap = 8;
 
     const haveSpaceForMoreTab =
-      nextWidth + (count < tabs.length - 1 ? moreButtonWidth : 0) <=
+      nextWidth +
+        (count < tabs.length - 1 ? moreButtonWidth : 0) +
+        gap * count + 8 <=
       availableWidth;
 
+    // console.log("nextWidth", nextWidth);
+    // console.log("gap * count", gap * count);
     if (haveSpaceForMoreTab) {
       totalWidth = nextWidth;
       count++;
+      // console.log("count", count);
     } else {
       break;
     }
@@ -259,6 +267,7 @@ function AdaptiveTabList({
               key={`measure-${tab.value}`}
               className={cn(
                 "measure-tab inline-flex items-center px-4 py-2",
+                tabTriggerVariants({ variant }),
                 ui?.trigger
               )}
             >
@@ -322,10 +331,10 @@ function AdaptiveTabList({
                 variant="ghost"
                 size="sm"
                 className={cn(
-                  "h-9 px-2 hover:bg-accent text-muted-foreground",
-                  TAB_SELECTED_IS_IN_OVERFLOW && "text-primary",
+                  "h-8 px-2 hover:text-foreground hover:bg-transparent text-muted-foreground data-[state=active]:bg-background data-[state=active]:text-primary",
                   ui?.dropdown?.trigger
                 )}
+                data-state={TAB_SELECTED_IS_IN_OVERFLOW ? "active" : "inactive"}
               >
                 <AlignJustify className="size-4" />
               </Button>
@@ -351,7 +360,7 @@ function AdaptiveTabList({
                     {tab.unSeen ? (
                       <span
                         className={cn(
-                          "inline-flex items-center justify-center whitespace-nowrap shrink-0 font-medium w-fit bg-primary text-white rounded-full !leading-normal  ms-2 min-w-5 px-1 text-xs",
+                          "inline-flex items-center justify-center whitespace-nowrap shrink-0 font-medium w-fit bg-primary text-white rounded-full ms-2 min-w-5 px-1 text-xs",
                           ui?.unSeenBadge
                         )}
                       >

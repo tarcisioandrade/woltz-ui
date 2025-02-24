@@ -9,60 +9,71 @@ import {
   Mail,
 } from "lucide-react";
 import { WTabs, TabItem, WTabsContent } from "./components/ui/wtabs-responsive";
-
-const tabs3: TabItem[] = [
-  {
-    icon: Mail,
-    title: "Drive",
-    value: "drive",
-    unSeen: 3,
-  },
-  {
-    icon: Check,
-    title: "Propostas",
-    value: "proposal",
-  },
-  {
-    icon: Bean,
-    title: "Contrato",
-    value: "contrato",
-  },
-  {
-    icon: CalendarCheck2,
-    title: "Timeline",
-    value: "timeline",
-  },
-  {
-    icon: CircleUser,
-    title: "Comunicação",
-    value: "comunicacao",
-  },
-  {
-    icon: Earth,
-    title: "Remuneração",
-    value: "remuneracao",
-  },
-  {
-    icon: Ham,
-    title: "Unidades",
-    value: "unidades",
-  },
-  {
-    icon: Link,
-    title: "Seleção Natural",
-    value: "selection",
-    unSeen: 2,
-  },
-];
+import { useState } from "react";
 
 export default function Apresentation() {
+  const [notify, setNotify] = useState(3);
+
+  const tabs3: TabItem[] = [
+    {
+      icon: Mail,
+      title: "Drive",
+      value: "drive",
+      unSeen: notify,
+    },
+    {
+      icon: Check,
+      title: "Propostas",
+      value: "proposal",
+    },
+    {
+      icon: Bean,
+      title: "Contrato",
+      value: "contrato",
+    },
+    {
+      icon: CalendarCheck2,
+      title: "Timeline",
+      value: "timeline",
+    },
+    {
+      icon: CircleUser,
+      title: "Comunicação",
+      value: "comunicacao",
+    },
+    {
+      icon: Earth,
+      title: "Remuneração",
+      value: "remuneracao",
+    },
+    {
+      icon: Ham,
+      title: "Unidades",
+      value: "unidades",
+    },
+    {
+      icon: Link,
+      title: "Seleção Natural",
+      value: "selection",
+      unSeen: 2,
+    },
+  ];
+
   return (
     <div className="py-6 max-w-screen-md mx-auto">
       <div className="p-2 rounded-md border">
         <p className="text-xl text-primary mb-4">
           Variant: "Line" - Horizontal
         </p>
-        <WTabs tabs={tabs3} query="lead" defaultValue="proposal" variant="line">
+        <WTabs
+          tabs={tabs3}
+          query="lead"
+          defaultValue="proposal"
+          variant="line"
+          onValueChange={(tab) => {
+            if (tab === "drive") setNotify(0);
+          }}
+        >
           <div className="bg-gray-50 rounded">
             <WTabsContent value="proposal">
               <p>Conteúdo 1</p>
