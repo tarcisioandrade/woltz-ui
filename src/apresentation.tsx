@@ -145,7 +145,14 @@ export default function Apresentation() {
         <p className="text-xl text-primary mb-4">
           Variant: "Default" - Horizontal
         </p>
-        <WTabs tabs={tabs3} query="lead" defaultValue="proposal">
+        <WTabs
+          tabs={tabs3}
+          query="lead"
+          defaultValue="proposal"
+          ui={{
+            trigger: "w-[140px]",
+          }}
+        >
           <div className="bg-gray-50 rounded">
             <WTabsContent value="proposal">
               <p>Conteúdo 1</p>

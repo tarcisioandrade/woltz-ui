@@ -90,6 +90,11 @@ const tabsContainerVariants = cva("w-full", {
   },
 });
 
+const DEFAULT_GAP = 8; // gap-2;
+const DEFAULT_PADDING_X = 8; // px-1;
+const DEFAULT_MORE_BUTTON_WIDTH = 50;
+
+// Tipos e interfaces
 export interface TabItem {
   title: string;
   value: string;
@@ -133,15 +138,19 @@ interface CalculateVisibleTabsProps {
   measure: TabMeasurements;
   containerWidth: number;
   tabs: TabItem[];
+  gap?: number;
+  paddingX?: number;
+  moreButtonWidth?: number;
 }
 
 function calculateVisibleTabs({
   measure,
   containerWidth,
   tabs,
+  gap = DEFAULT_GAP,
+  paddingX = DEFAULT_PADDING_X,
+  moreButtonWidth = DEFAULT_MORE_BUTTON_WIDTH,
 }: CalculateVisibleTabsProps) {
-  // TODO: Avaliar possiveis problemas do moreButtonWidth não se dinâmico
-  const moreButtonWidth = 50;
   const availableWidth = containerWidth;
   let count = 0;
   let totalWidth = 0;
@@ -149,26 +158,34 @@ function calculateVisibleTabs({
   for (const tab of tabs) {
     const tabWidth = measure[tab.value] || 0;
     const nextWidth = totalWidth + tabWidth;
-    // TODO: Pegar dinamicamente o gap, padding left e right do tab list e adicionar no cálculo.
-    const gap = 8;
 
-    const haveSpaceForMoreTab =
-      nextWidth +
-        (count < tabs.length - 1 ? moreButtonWidth : 0) +
-        gap * count + 8 <=
-      availableWidth;
+    const moreButtonWidthOrZero = count < tabs.length - 1 ? moreButtonWidth : 0;
+    const totalSpaceNeeded =
+      nextWidth + gap * count + paddingX + moreButtonWidthOrZero;
 
-    // console.log("nextWidth", nextWidth);
-    // console.log("gap * count", gap * count);
-    if (haveSpaceForMoreTab) {
+    if (totalSpaceNeeded <= availableWidth) {
       totalWidth = nextWidth;
       count++;
-      // console.log("count", count);
     } else {
       break;
     }
   }
   return count;
+}
+
+function getComputedListStyle(element: HTMLDivElement) {
+  const computedStyle = window.getComputedStyle(element);
+  const gap = parseInt(computedStyle.gap) || DEFAULT_GAP;
+  const paddingLeft =
+    parseInt(computedStyle.paddingLeft) || DEFAULT_PADDING_X / 2;
+  const paddingRight =
+    parseInt(computedStyle.paddingRight) || DEFAULT_PADDING_X / 2;
+  const paddingX = paddingLeft + paddingRight;
+
+  return {
+    paddingX,
+    gap,
+  };
 }
 
 function AdaptiveTabList({
@@ -209,10 +226,19 @@ function AdaptiveTabList({
       setMeasurements(newMeasurements);
 
       const containerWidth = listRef.current?.offsetWidth || 0;
+
+      if (!listRef.current) {
+        console.error("ERROR: 'ListRef.current' not found");
+      }
+
+      const { gap, paddingX } = getComputedListStyle(listRef.current!);
+
       const count = calculateVisibleTabs({
         tabs,
         measure: newMeasurements,
         containerWidth,
+        gap,
+        paddingX,
       });
 
       setVisibleCount(count);
@@ -235,16 +261,20 @@ function AdaptiveTabList({
     if (!currentListRef) return;
 
     const resizeObserver = new ResizeObserver(() => {
+      const { gap, paddingX } = getComputedListStyle(currentListRef);
+
       const count = calculateVisibleTabs({
         tabs,
         measure: measurements,
         containerWidth: currentListRef.offsetWidth,
+        gap,
+        paddingX,
       });
 
       setVisibleCount(count);
     });
-    resizeObserver.observe(currentListRef);
 
+    resizeObserver.observe(currentListRef);
     return () => void resizeObserver.disconnect();
   }, [measurements, tabs, IS_VERTICAL]);
 
@@ -377,6 +407,7 @@ function AdaptiveTabList({
     </>
   );
 }
+
 export function WTabs({
   tabs,
   children,
