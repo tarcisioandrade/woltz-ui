@@ -94,7 +94,6 @@ const DEFAULT_GAP = 8; // gap-2;
 const DEFAULT_PADDING_X = 8; // px-1;
 const DEFAULT_MORE_BUTTON_WIDTH = 50;
 
-// Tipos e interfaces
 export interface TabItem {
   title: string;
   value: string;
