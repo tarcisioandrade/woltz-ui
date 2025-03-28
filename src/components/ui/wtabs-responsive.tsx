@@ -44,7 +44,7 @@ const tabTriggerVariants = cva(
   }
 );
 
-const tabListVariants = cva("flex gap-2 w-full justify-start", {
+const tabListVariants = cva("flex gap-2 w-full justify-start p-0.5 text-muted-foreground/70 h-fit", {
   variants: {
     variant: {
       line: "border-b bg-transparent text-foreground rounded-none",

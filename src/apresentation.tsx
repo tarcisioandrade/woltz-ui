@@ -23,7 +23,7 @@ export default function Apresentation() {
     },
     {
       icon: Check,
-      title: "Propostas",
+      title: "Propostas de contrato assinado",
       value: "proposal",
     },
     {
@@ -43,7 +43,7 @@ export default function Apresentation() {
     },
     {
       icon: Earth,
-      title: "Remuneração",
+      title: "Remuneração do tarcisio",
       value: "remuneracao",
     },
     {
