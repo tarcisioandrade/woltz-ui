@@ -228,9 +228,9 @@ function AdaptiveTabList({
 
       setMeasurements(newMeasurements);
 
-      const containerWidth = listRef.current?.offsetWidth || 0;
+      const containerWidth = measureRef.current?.offsetWidth || 0;
 
-      if (!listRef.current) {
+      if (!measureRef.current) {
         console.error("ERROR: 'ListRef.current' not found");
       }
 
@@ -260,7 +260,7 @@ function AdaptiveTabList({
   useEffect(() => {
     if (IS_VERTICAL) return;
 
-    const currentListRef = listRef.current;
+    const currentListRef = measureRef.current;
     if (!currentListRef) return;
 
     const resizeObserver = new ResizeObserver(() => {
