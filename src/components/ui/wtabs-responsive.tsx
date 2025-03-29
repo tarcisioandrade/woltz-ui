@@ -1,5 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Tabs as ShadcnTabs,
+  TabsContent as ShadcnTabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { useQueryState } from "nuqs";
 import { AlignJustify, LucideIcon } from "lucide-react";
@@ -115,21 +120,21 @@ type TabsUI = {
   };
 };
 
-interface WTabsProps
-  extends Omit<ComponentProps<typeof Tabs>, "onChange" | "orientation">,
+interface TabsProps
+  extends Omit<ComponentProps<typeof ShadcnTabs>, "onChange" | "orientation">,
     VariantProps<typeof tabTriggerVariants> {
   tabs: TabItem[];
   query?: string;
   ui?: TabsUI;
 }
 
-interface WAdaptiveTabsListProps
+interface AdaptiveTabsListProps
   extends VariantProps<typeof tabTriggerVariants> {
   tabs: TabItem[];
   selected: string;
   onSelect: (value: string) => void;
   ui?: TabsUI;
-  orientation?: WTabsProps["orientation"];
+  orientation?: TabsProps["orientation"];
 }
 
 interface TabMeasurements {
@@ -153,18 +158,19 @@ function calculateVisibleTabs({
   paddingX = DEFAULT_PADDING_X,
   moreButtonWidth = DEFAULT_MORE_BUTTON_WIDTH,
 }: CalculateVisibleTabsProps) {
-  const availableWidth = containerWidth * 0.98;
+  const availableWidth = (containerWidth - paddingX) * 0.98;
   let count = 0;
   let totalWidth = 0;
 
   for (const tab of tabs) {
     const tabWidth = measure[tab.value] || 0;
     const nextWidth = totalWidth + tabWidth;
+    const isLastTab = count < tabs.length - 1;
 
-    const moreButtonWidthOrZero = count < tabs.length - 1 ? moreButtonWidth : 0;
-    const moreGapWidthOrZero = count < tabs.length - 1 ? gap : 0;
+    const moreButtonWidthOrZero = isLastTab ? moreButtonWidth : 0;
+    const moreGapWidthOrZero = isLastTab ? gap : 0;
     const totalSpaceNeeded =
-      nextWidth + moreGapWidthOrZero * count + paddingX + moreButtonWidthOrZero;
+      nextWidth + moreGapWidthOrZero + moreButtonWidthOrZero;
 
     if (totalSpaceNeeded <= availableWidth) {
       totalWidth = nextWidth;
@@ -178,11 +184,11 @@ function calculateVisibleTabs({
 
 function getComputedListStyle(element: HTMLDivElement) {
   const computedStyle = window.getComputedStyle(element);
-  const gap = parseInt(computedStyle.gap) || DEFAULT_GAP;
+  const gap = Number.parseInt(computedStyle.gap) || DEFAULT_GAP;
   const paddingLeft =
-    parseInt(computedStyle.paddingLeft) || DEFAULT_PADDING_X / 2;
+    Number.parseInt(computedStyle.paddingLeft) || DEFAULT_PADDING_X / 2;
   const paddingRight =
-    parseInt(computedStyle.paddingRight) || DEFAULT_PADDING_X / 2;
+    Number.parseInt(computedStyle.paddingRight) || DEFAULT_PADDING_X / 2;
   const paddingX = paddingLeft + paddingRight;
 
   return {
@@ -198,7 +204,7 @@ function AdaptiveTabList({
   variant,
   ui,
   orientation,
-}: WAdaptiveTabsListProps) {
+}: AdaptiveTabsListProps) {
   const IS_VERTICAL = orientation === "vertical";
   const DEFAULT_VISIBLE_COUNT = IS_VERTICAL ? tabs.length : 0;
 
@@ -234,7 +240,9 @@ function AdaptiveTabList({
         console.error("ERROR: 'ListRef.current' not found");
       }
 
-      const { gap, paddingX } = getComputedListStyle(listRef.current!);
+      const { gap, paddingX } = getComputedListStyle(
+        listRef.current as HTMLDivElement
+      );
 
       const count = calculateVisibleTabs({
         tabs,
@@ -419,7 +427,7 @@ function AdaptiveTabList({
   );
 }
 
-export function WTabs({
+export function Tabs({
   tabs,
   children,
   onValueChange,
@@ -430,7 +438,7 @@ export function WTabs({
   ui,
   orientation,
   ...props
-}: WTabsProps) {
+}: TabsProps) {
   const [queryValue, setQuery] = useQueryState(query ?? "");
   const [selected, setSelected] = useState<string>(
     (queryValue || defaultValue || tabs[0]?.value) ?? ""
@@ -449,7 +457,7 @@ export function WTabs({
   if (!tabs.length) return null;
 
   return (
-    <Tabs
+    <ShadcnTabs
       value={selected}
       onValueChange={handleSelected}
       defaultValue={selected}
@@ -472,13 +480,13 @@ export function WTabs({
       ) : (
         children
       )}
-    </Tabs>
+    </ShadcnTabs>
   );
 }
 
-export function WTabsContent({
+export function TabsContent({
   children,
   ...props
-}: ComponentProps<typeof TabsContent>) {
-  return <TabsContent {...props}>{children}</TabsContent>;
+}: ComponentProps<typeof ShadcnTabsContent>) {
+  return <ShadcnTabsContent {...props}>{children}</ShadcnTabsContent>;
 }
