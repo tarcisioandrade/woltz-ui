@@ -1,13 +1,4 @@
-import {
-  Bean,
-  CalendarCheck2,
-  Check,
-  CircleUser,
-  Earth,
-  Ham,
-  Link,
-  Mail,
-} from "lucide-react";
+import { Check, Earth, Mail } from "lucide-react";
 import { WTabs, TabItem, WTabsContent } from "./components/ui/wtabs-responsive";
 import { useState } from "react";
 
@@ -17,48 +8,60 @@ export default function Apresentation() {
   const tabs3: TabItem[] = [
     {
       icon: Mail,
-      title: "Drive",
+      title: "Drive de Documentos",
       value: "drive",
-      unSeen: notify,
     },
     {
       icon: Check,
-      title: "Propostas de contrato assinado",
+      title: "Propostaaaaaaaaaaaaaaas",
+      value: "proposal",
+    },
+    // {
+    //   icon: Earth,
+    //   title: "Remuneração Financeira",
+    //   value: "remuneracao",
+    // },
+    // {
+    //   icon: Ham,
+    //   title: "Unidades",
+    //   value: "unidades",
+    // },
+    // {
+    //   icon: Link,
+    //   title: "Seleção Natural",
+    //   value: "selection",
+    //   unSeen: 2,
+    // },
+  ];
+
+  const tabs4: TabItem[] = [
+    {
+      icon: Mail,
+      title: "Drive de Documentos",
+      value: "drive",
+    },
+    {
+      icon: Check,
+      title: "Propostas",
       value: "proposal",
     },
     {
-      icon: Bean,
-      title: "Contrato",
-      value: "contrato",
-    },
-    {
-      icon: CalendarCheck2,
-      title: "Timeline",
-      value: "timeline",
-    },
-    {
-      icon: CircleUser,
-      title: "Comunicação",
-      value: "comunicacao",
-    },
-    {
       icon: Earth,
-      title: "Remuneração do tarcisio",
+      title: "Remuneração Financeira",
       value: "remuneracao",
     },
-    {
-      icon: Ham,
-      title: "Unidades",
-      value: "unidades",
-    },
-    {
-      icon: Link,
-      title: "Seleção Natural",
-      value: "selection",
-      unSeen: 2,
-    },
+    // {
+    //   icon: Ham,
+    //   title: "Unidades",
+    //   value: "unidades",
+    // },
+    // {
+    //   icon: Link,
+    //   title: "Seleção Natural",
+    //   value: "selection",
+    //   unSeen: 2,
+    // },
   ];
-
   return (
     <div className="py-6 max-w-screen-md mx-auto">
       <div className="p-2 rounded-md border">
@@ -68,8 +71,8 @@ export default function Apresentation() {
         <WTabs
           tabs={tabs3}
           query="lead"
+          // variant="line"
           defaultValue="proposal"
-          variant="line"
           onValueChange={(tab) => {
             if (tab === "drive") setNotify(0);
           }}
@@ -102,7 +105,7 @@ export default function Apresentation() {
           </div>
         </WTabs>
       </div>
-
+      {/* 
       <div className="mt-12 p-2 rounded-md border">
         <p className="text-xl text-primary mb-4">Variant: "Line" - Vertical</p>
         <WTabs
@@ -145,14 +148,7 @@ export default function Apresentation() {
         <p className="text-xl text-primary mb-4">
           Variant: "Default" - Horizontal
         </p>
-        <WTabs
-          tabs={tabs3}
-          query="lead"
-          defaultValue="proposal"
-          ui={{
-            trigger: "w-[140px]",
-          }}
-        >
+        <WTabs tabs={tabs4} query="lead" defaultValue="proposal">
           <div className="bg-gray-50 rounded">
             <WTabsContent value="proposal">
               <p>Conteúdo 1</p>
@@ -216,7 +212,7 @@ export default function Apresentation() {
             </WTabsContent>
           </div>
         </WTabs>
-      </div>
+      </div> */}
     </div>
   );
 }

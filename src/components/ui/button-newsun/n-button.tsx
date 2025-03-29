@@ -2,10 +2,10 @@ import React from "react";
 import { cn } from "@/lib/utils";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, VariantProps } from "class-variance-authority";
-import { RoundSpinner } from "../spinner";
+import { Spinner } from "../spinner";
 
 const ButtonVariantsCva = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
   {
     variants: {
       size: {
@@ -14,6 +14,7 @@ const ButtonVariantsCva = cva(
         sm: "px-3 h-8 min-w-8 text-sm",
         lg: "px-6 h-12 min-w-12 text-lg",
         xl: "px-8 h-14 min-w-14 text-xl",
+        icon: "h-10 w-10 [&_svg]:size-[calc(100%_/2)]",
       },
       variant: {
         default: "bg-primary text-primary-foreground hover:bg-primary/90",
@@ -25,6 +26,7 @@ const ButtonVariantsCva = cva(
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
+        unstyled: "p-0 text-base font-normal",
       },
     },
     defaultVariants: {
@@ -66,31 +68,28 @@ const NButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
       <Comp
         className={cn(
           ButtonVariantsCva({ variant, size, className }),
-          "relative",
-          isLoading && "cursor-wait"
+          "relative ns-button group",
+          isLoading && "loading cursor-wait"
         )}
         ref={ref}
         disabled={isDisabled}
         {...props}
       >
-        {isLoading && (
-          <span
-            className="absolute inset-0 flex items-center justify-center spinner"
-            aria-label="Carregando"
-          >
-            <RoundSpinner />
-          </span>
-        )}
+        <span
+          className="ns-spinner invisible group-[.loading]:flex group-[.loading]:items-center group-[.loading]:justify-center group-[.loading]:visible"
+          aria-label="Carregando"
+        >
+          <Spinner />
+        </span>
 
         <span
           className={cn(
-            "flex items-center justify-center gap-2 text",
-            isLoading && "invisible" // Esconde o conteúdo quando carregando
+            "flex items-center justify-center gap-2 ns-text group-[.loading]:invisible"
           )}
         >
-          {leftIcon && !isLoading && leftIcon}
+          {leftIcon && leftIcon}
           {children}
-          {rightIcon && !isLoading && rightIcon}
+          {rightIcon && rightIcon}
         </span>
       </Comp>
     );

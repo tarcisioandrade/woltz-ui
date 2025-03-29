@@ -44,39 +44,42 @@ const tabTriggerVariants = cva(
   }
 );
 
-const tabListVariants = cva("flex gap-2 w-full justify-start p-0.5 text-muted-foreground/70 h-fit", {
-  variants: {
-    variant: {
-      line: "border-b bg-transparent text-foreground rounded-none",
-      default: "rounded-md bg-secondary",
+const tabListVariants = cva(
+  "flex gap-2 w-full justify-start p-0.5 text-muted-foreground/70 h-fit",
+  {
+    variants: {
+      variant: {
+        line: "border-b bg-transparent text-foreground rounded-none",
+        default: "rounded-md bg-secondary",
+      },
+      orientation: {
+        horizontal: "transition-opacity duration-300 flex-wrap max-h-[42px]",
+        vertical: "flex-col p-1 gap-1 w-max",
+      },
     },
-    orientation: {
-      horizontal: "transition-opacity duration-300 flex-wrap max-h-[42px]",
-      vertical: "flex-col p-1 gap-1 w-max",
-    },
-  },
-  defaultVariants: {
-    variant: "default",
-    orientation: "horizontal",
-  },
-  compoundVariants: [
-    {
-      variant: "line",
-      orientation: "vertical",
-      className: "border-b-0 border-l p-0",
-    },
-    {
-      variant: "line",
-      orientation: "horizontal",
-      className: "px-0 py-1",
-    },
-    {
+    defaultVariants: {
       variant: "default",
       orientation: "horizontal",
-      className: "p-1",
     },
-  ],
-});
+    compoundVariants: [
+      {
+        variant: "line",
+        orientation: "vertical",
+        className: "border-b-0 border-l p-0",
+      },
+      {
+        variant: "line",
+        orientation: "horizontal",
+        className: "px-0 py-1",
+      },
+      {
+        variant: "default",
+        orientation: "horizontal",
+        className: "p-1",
+      },
+    ],
+  }
+);
 
 const tabsContainerVariants = cva("w-full", {
   variants: {
@@ -150,7 +153,7 @@ function calculateVisibleTabs({
   paddingX = DEFAULT_PADDING_X,
   moreButtonWidth = DEFAULT_MORE_BUTTON_WIDTH,
 }: CalculateVisibleTabsProps) {
-  const availableWidth = containerWidth;
+  const availableWidth = containerWidth * 0.98;
   let count = 0;
   let totalWidth = 0;
 
@@ -159,8 +162,9 @@ function calculateVisibleTabs({
     const nextWidth = totalWidth + tabWidth;
 
     const moreButtonWidthOrZero = count < tabs.length - 1 ? moreButtonWidth : 0;
+    const moreGapWidthOrZero = count < tabs.length - 1 ? gap : 0;
     const totalSpaceNeeded =
-      nextWidth + gap * count + paddingX + moreButtonWidthOrZero;
+      nextWidth + moreGapWidthOrZero * count + paddingX + moreButtonWidthOrZero;
 
     if (totalSpaceNeeded <= availableWidth) {
       totalWidth = nextWidth;
@@ -261,11 +265,12 @@ function AdaptiveTabList({
 
     const resizeObserver = new ResizeObserver(() => {
       const { gap, paddingX } = getComputedListStyle(currentListRef);
+      const containerWidth = currentListRef.offsetWidth;
 
       const count = calculateVisibleTabs({
         tabs,
         measure: measurements,
-        containerWidth: currentListRef.offsetWidth,
+        containerWidth,
         gap,
         paddingX,
       });
@@ -286,36 +291,43 @@ function AdaptiveTabList({
   return (
     <>
       {!IS_VERTICAL && (
-        <div
+        <TabsList
           ref={measureRef}
-          className="absolute -left-full invisible"
+          className={cn(
+            tabListVariants({ variant, orientation }),
+            "invisible h-0 pointer-events-none",
+            ui?.triggerList
+          )}
           aria-hidden="true"
         >
-          {tabs.map((tab) => (
-            <div
-              key={`measure-${tab.value}`}
-              className={cn(
-                "measure-tab inline-flex items-center px-4 py-2",
-                tabTriggerVariants({ variant }),
-                ui?.trigger
-              )}
-            >
-              {tab.icon && <tab.icon className="mr-2" size={20} />}
-              <span>{tab.title}</span>
-              {tab.unSeen ? (
-                <span
-                  role="badge"
-                  className={cn(
-                    "inline-flex items-center justify-center whitespace-nowrap shrink-0 font-medium w-fit bg-primary text-white rounded-full leading-normal  ms-2 min-w-5 px-1 text-xs",
-                    ui?.unSeenBadge
-                  )}
-                >
-                  {tab.unSeen}
-                </span>
-              ) : null}
-            </div>
-          ))}
-        </div>
+          {tabs.map((tab) => {
+            const Icon = tab.icon;
+            return (
+              <TabsTrigger
+                key={tab.value}
+                value={tab.value}
+                className={cn(
+                  "measure-tab",
+                  tabTriggerVariants({ variant, orientation }),
+                  ui?.trigger
+                )}
+              >
+                {Icon && <Icon className="me-2 shrink-0" size={14} />}
+                {tab.title}
+                {tab.unSeen ? (
+                  <span
+                    className={cn(
+                      "inline-flex items-center justify-center whitespace-nowrap shrink-0 font-medium w-fit bg-primary text-white rounded-full ms-2 min-w-5 px-1 text-xs size-5",
+                      ui?.unSeenBadge
+                    )}
+                  >
+                    {tab.unSeen}
+                  </span>
+                ) : null}
+              </TabsTrigger>
+            );
+          })}
+        </TabsList>
       )}
 
       <TabsList
@@ -337,7 +349,7 @@ function AdaptiveTabList({
                 ui?.trigger
               )}
             >
-              {Icon && <Icon className="me-2 shrink-0" size={20} />}
+              {Icon && <Icon className="me-2 shrink-0" size={14} />}
               {tab.title}
               {tab.unSeen ? (
                 <span
